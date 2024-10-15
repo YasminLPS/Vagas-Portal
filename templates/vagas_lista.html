@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Vagas Disponíveis</h1>
+<a href="{% url 'criar_vaga' %}">Criar Vaga</a>
+<ul>
+    {% for vaga in vagas %}
+        <li>{{ vaga.titulo }} - Candidatos: {{ vaga.candidatos.count }}</li>
+        <a href="{% url 'aplicar_para_vaga' vaga.id %}">Candidatar</a>
+    {% endfor %}
+</ul>
+{% endblock %}
+

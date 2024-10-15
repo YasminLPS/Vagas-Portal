@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login
+
 from .forms import UserRegistrationForm, EmpresaForm
+from .models import Vaga, Candidato, Empresa 
+
+
 
 def registrar(request):
     if request.method == 'POST':
@@ -11,14 +15,14 @@ def registrar(request):
         
         if user_form.is_valid() and empresa_form.is_valid():
             user = user_form.save(commit=False)
-            user.set_password(user_form.cleaned_data['password'])  # Definindo a senha corretamente
+            user.set_password(user_form.cleaned_data['password']) 
             user.save()
 
             empresa = empresa_form.save(commit=False)
-            empresa.usuario = user  # Associe a empresa ao usuário
+            empresa.usuario = user  
             empresa.save()
 
-            return redirect('login')  # Redireciona após o registro
+            return redirect('login') 
     else:
         user_form = UserRegistrationForm()
         empresa_form = EmpresaForm()
@@ -35,7 +39,12 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('vagas_lista')  # Redireciona para a lista de vagas após o login
+                return redirect('vagas_lista')  
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
+
+@login_required
+def vagas_lista(request):
+    vagas = Vaga.objects.all()
+    return render(request, 'vagas_lista.html', {'vagas': vagas})
