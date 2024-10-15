@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.db.models.functions import TruncMonth
+from django.core.serializers.json import DjangoJSONEncoder
+from django.http import JsonResponse
+from django.db.models import Count
 
 from .forms import UserRegistrationForm, EmpresaForm, VagaForm, CandidatoForm
 from .models import Vaga, Candidato, Empresa 
@@ -75,3 +79,12 @@ def aplicar_para_vaga(request, vaga_id):
     else:
         form = CandidatoForm()
     return render(request, 'aplicar_para_vaga.html', {'form': form, 'vaga': vaga})
+
+def report_data(request):
+    vagas_por_mes = Vaga.objects.annotate(month=TruncMonth('created_at')).values('month').annotate(count=Count('id'))
+    candidatos_por_mes = Candidato.objects.annotate(month=TruncMonth('created_at')).values('month').annotate(count=Count('id'))
+
+    return JsonResponse({
+        'vagas': list(vagas_por_mes),
+        'candidatos': list(candidatos_por_mes),
+    }, encoder=DjangoJSONEncoder)

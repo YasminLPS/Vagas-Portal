@@ -7,5 +7,4 @@ urlpatterns = [
     path('', vagas_lista, name='vagas_lista'),
     path('criar/', criar_vaga, name='criar_vaga'),
     path('aplicar/<int:vaga_id>/', aplicar_para_vaga, name='aplicar_para_vaga'),
-
 ]
