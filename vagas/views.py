@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 
-from .forms import UserRegistrationForm, EmpresaForm, VagaForm
+from .forms import UserRegistrationForm, EmpresaForm, VagaForm, CandidatoForm
 from .models import Vaga, Candidato, Empresa 
 
 
@@ -61,3 +61,17 @@ def criar_vaga(request):
     else:
         form = VagaForm()
     return render(request, 'criar_vaga.html', {'form': form})
+
+@login_required
+def aplicar_para_vaga(request, vaga_id):
+    vaga = get_object_or_404(Vaga, id=vaga_id)  
+    if request.method == "POST":
+        form = CandidatoForm(request.POST)
+        if form.is_valid():
+            candidato = form.save(commit=False)
+            candidato.vaga = vaga
+            candidato.save()
+            return redirect('vagas_lista')
+    else:
+        form = CandidatoForm()
+    return render(request, 'aplicar_para_vaga.html', {'form': form, 'vaga': vaga})
