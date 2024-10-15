@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 
-from .forms import UserRegistrationForm, EmpresaForm
+from .forms import UserRegistrationForm, EmpresaForm, VagaForm
 from .models import Vaga, Candidato, Empresa 
 
 
@@ -48,3 +48,16 @@ def login_view(request):
 def vagas_lista(request):
     vagas = Vaga.objects.all()
     return render(request, 'vagas_lista.html', {'vagas': vagas})
+
+@login_required
+def criar_vaga(request):
+    if request.method == "POST":
+        form = VagaForm(request.POST)
+        if form.is_valid():
+            vaga = form.save(commit=False)
+            vaga.empresa = Empresa.objects.get(email=request.user.email) 
+            vaga.save()
+            return redirect('vagas_lista')
+    else:
+        form = VagaForm()
+    return render(request, 'criar_vaga.html', {'form': form})

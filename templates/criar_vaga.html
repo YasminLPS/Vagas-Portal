@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Criar Nova Vaga</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="titulo">Título da Vaga:</label>
+            <input type="text" class="form-control" id="titulo" name="titulo" required>
+        </div>
+        <div class="form-group">
+            <label for="faixa_salarial">Faixa Salarial:</label>
+            <select class="form-control" id="faixa_salarial" name="faixa_salarial" required>
+                <option value="0-1000">Até 1.000</option>
+                <option value="1000-2000">De 1.000 a 2.000</option>
+                <option value="2000-3000">De 2.000 a 3.000</option>
+                <option value="3000+">Acima de 3.000</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="requerimentos">Requisitos:</label>
+            <textarea class="form-control" id="requerimentos" name="requerimentos" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="ensino_minimo">Ensino Mínimo:</label>
+            <select class="form-control" id="ensino_minimo" name="ensino_minimo" required>
+                <option value="Fundamental">Ensino Fundamental</option>
+                <option value="Medio">Ensino Médio</option>
+                <option value="Tecnologo">Tecnólogo</option>
+                <option value="Superior">Ensino Superior</option>
+                <option value="Pós">Pós / MBA / Mestrado</option>
+                <option value="Doutorado">Doutorado</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Criar Vaga</button>
+        <a href="{% url 'vagas_lista' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
