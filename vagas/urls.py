@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import vagas_lista, criar_vaga, aplicar_para_vaga, login_view,registrar
+from .views import login_view,registrar
 
 urlpatterns = [
-
+    path('login/', login_view, name='login'),
+    path('registrar/', registrar, name='registrar'),
 ]
