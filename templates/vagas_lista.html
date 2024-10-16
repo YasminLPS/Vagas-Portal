@@ -2,14 +2,33 @@
 {% load static %}
 
 {% block content %}
-<h1>Vagas Disponíveis</h1>
-<a href="{% url 'criar_vaga' %}">Criar Vaga</a>
-<ul>
-    {% for vaga in vagas %}
-        <li>{{ vaga.titulo }} - Candidatos: {{ vaga.candidatos.count }}</li>
-        <a href="{% url 'aplicar_para_vaga' vaga.id %}">Candidatar</a>
-        <a href="{% url 'visualizar_report' vaga.id %}">Report</a>
-    {% endfor %}
-</ul>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Vagas Disponíveis</h1>
+    <a href="{% url 'criar_vaga' %}" class="btn btn-primary mb-3">Criar Vaga</a>
+    <div class="row">
+        {% for vaga in vagas %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ vaga.titulo }}</h5>
+                        <p class="card-text"><strong>Requisitos:</strong> {{ vaga.requerimentos }}</p>
+                        <p class="card-text"><strong>Candidatos:</strong> {{ vaga.candidatos.count }}</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'aplicar_para_vaga' vaga.id %}" class="btn btn-success">Candidatar</a>
+                            {% if vaga.empresa.usuario == request.user %}
+                                <a href="{% url 'visualizar_report' vaga.id %}" class="btn btn-info">Report</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center" role="alert">
+                    Não há vagas disponíveis no momento.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
-

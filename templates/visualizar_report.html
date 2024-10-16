@@ -5,9 +5,9 @@
 <div class="container">
     <h2>Relatório da Vaga: {{ vaga.titulo }}</h2>
     
-    <p><strong>Faixa Salarial:</strong> {{ vaga.faixa_salarial }}</p>
+    <p><strong>Faixa Salarial:</strong> {{ vaga.get_faixa_salarial_display }}</p>
     <p><strong>Requisitos:</strong> {{ vaga.requerimentos }}</p>
-    <p><strong>Ensino Mínimo:</strong> {{ vaga.ensino_minimo }}</p>
+    <p><strong>Ensino Mínimo:</strong> {{ vaga.get_ensino_minimo_display }}</p>
     <p><strong>Total de Candidatos:</strong> {{ total_candidatos }}</p>
 
     <h3>Candidatos:</h3>
@@ -18,14 +18,16 @@
                     <th>Experiência</th>
                     <th>Ensino Último</th>
                     <th>Expectativa Salarial</th>
+                    <th>Pontuação</th> 
                 </tr>
             </thead>
             <tbody>
                 {% for candidato in candidatos %}
                     <tr>
                         <td>{{ candidato.experiencia }}</td>
-                        <td>{{ candidato.ensino_ultimo }}</td>
+                        <td>{{ candidato.get_ensino_ultimo_display }}</td>
                         <td>{{ candidato.expectativa_salarial }}</td>
+                        <td>{{ candidato.calcular_score }}</td> 
                     </tr>
                 {% endfor %}
             </tbody>

@@ -97,13 +97,16 @@ def visualizar_report(request, vaga_id):
 
     if vaga.empresa.usuario != request.user:
         return render(request, 'acesso_negado.html')  
-    candidatos = Candidato.objects.filter(vaga=vaga)
     
-    total_candidatos = candidatos.count()
+    candidatos = Candidato.objects.filter(vaga=vaga)
+
+    candidatos_com_pontuacao = sorted(candidatos, key=lambda c: c.calcular_score(), reverse=True)
+    
+    total_candidatos = len(candidatos_com_pontuacao)
 
     context = {
         'vaga': vaga,
-        'candidatos': candidatos,
+        'candidatos': candidatos_com_pontuacao,
         'total_candidatos': total_candidatos
     }
     return render(request, 'visualizar_report.html', context)
