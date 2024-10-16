@@ -8,6 +8,7 @@
     {% for vaga in vagas %}
         <li>{{ vaga.titulo }} - Candidatos: {{ vaga.candidatos.count }}</li>
         <a href="{% url 'aplicar_para_vaga' vaga.id %}">Candidatar</a>
+        <a href="{% url 'visualizar_report' vaga.id %}">Report</a>
     {% endfor %}
 </ul>
 {% endblock %}

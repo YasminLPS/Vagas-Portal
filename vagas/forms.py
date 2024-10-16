@@ -4,12 +4,13 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-class UserRegistrationForm(forms.ModelForm):
+class UsuarioForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['email', 'username', 'password']
-
-    password = forms.CharField(widget=forms.PasswordInput)
+        fields = ['username', 'email', 'password']
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
 
 class EmpresaForm(forms.ModelForm):
     class Meta:

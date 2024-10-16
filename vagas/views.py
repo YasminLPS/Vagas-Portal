@@ -7,31 +7,32 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
 from django.db.models import Count
 
-from .forms import UserRegistrationForm, EmpresaForm, VagaForm, CandidatoForm
+from .forms import UsuarioForm, EmpresaForm, VagaForm, CandidatoForm
 from .models import Vaga, Candidato, Empresa 
 
 
-
 def registrar(request):
-    if request.method == 'POST':
-        user_form = UserRegistrationForm(request.POST)
+    if request.method == "POST":
+        usuario_form = UsuarioForm(request.POST)
         empresa_form = EmpresaForm(request.POST)
-        
-        if user_form.is_valid() and empresa_form.is_valid():
-            user = user_form.save(commit=False)
-            user.set_password(user_form.cleaned_data['password']) 
-            user.save()
-
+        if usuario_form.is_valid() and empresa_form.is_valid():
+            # Criar o usuário
+            usuario = usuario_form.save()
+            # Criar a empresa associando-a ao usuário
             empresa = empresa_form.save(commit=False)
-            empresa.usuario = user  
+            empresa.usuario = usuario  # Relaciona a empresa ao usuário recém-criado
             empresa.save()
-
-            return redirect('login') 
+            # Fazer o login do usuário
+            login(request, usuario)
+            return redirect('vagas_lista')
     else:
-        user_form = UserRegistrationForm()
+        usuario_form = UsuarioForm()
         empresa_form = EmpresaForm()
-        
-    return render(request, 'registrar.html', {'user_form': user_form, 'empresa_form': empresa_form})
+
+    return render(request, 'registrar.html', {
+        'usuario_form': usuario_form,
+        'empresa_form': empresa_form
+    })
 
 
 def login_view(request):
@@ -88,3 +89,21 @@ def report_data(request):
         'vagas': list(vagas_por_mes),
         'candidatos': list(candidatos_por_mes),
     }, encoder=DjangoJSONEncoder)
+    
+
+@login_required
+def visualizar_report(request, vaga_id):
+    vaga = get_object_or_404(Vaga, id=vaga_id)
+
+    if vaga.empresa.usuario != request.user:
+        return render(request, 'acesso_negado.html')  
+    candidatos = Candidato.objects.filter(vaga=vaga)
+    
+    total_candidatos = candidatos.count()
+
+    context = {
+        'vaga': vaga,
+        'candidatos': candidatos,
+        'total_candidatos': total_candidatos
+    }
+    return render(request, 'visualizar_report.html', context)

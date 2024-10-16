@@ -3,13 +3,16 @@
 
 {% block content %}
 <div class="container">
-    <h2>Registrar</h2>
-    <form method="post">
+    <h2>Registrar Usuário e Empresa</h2>
+    <form method="POST">
         {% csrf_token %}
-        {{ user_form.as_p }}
+        <h3>Dados do Usuário</h3>
+        {{ usuario_form.as_p }}
+
+        <h3>Dados da Empresa</h3>
         {{ empresa_form.as_p }}
-        <button type="submit" class="btn btn-primary">Registrar</button>
-    </form>
+
+        <button type="submit">Registrar</button>
     <p>Já possui uma conta? <a href="{% url 'login' %}">Faça login</a></p>
 </div>
 {% endblock %}

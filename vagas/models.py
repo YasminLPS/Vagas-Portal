@@ -1,9 +1,11 @@
 from django.db import models
 from decimal import Decimal
+from django.contrib.auth.models import User
 
 class Empresa(models.Model):
     nome = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nome
@@ -40,13 +42,15 @@ class Candidato(models.Model):
 
     def __str__(self):
         return f'{self.ensino_ultimo} - {self.expectativa_salarial}'
-    
+
     def calcular_score(self):
         score = 0
 
+        # Adiciona 1 ponto se o candidato está dentro da faixa salarial da vaga
         if self._is_salario_dentro_faixa():
             score += 1
 
+        # Adiciona 1 ponto se a escolaridade do candidato é compatível ou maior que o mínimo exigido pela vaga
         if self._is_educacao_compatível():
             score += 1
 
